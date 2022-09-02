@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BLOGS</title>
+</head>
+<body>
+    {% if not blogs %}
+    <h1>No Blogs</h1>
+    <a href="{% url 'blog_create' %}">Create Blog</a>
+    {% else %}
+    {% for blog in blogs %}
+        {% if blog.blog_image %}
+            <img src="{{ blog.blog_image.url }}"><br>
+        {% else %}{% endif %}
+            {{ blog.title }}<br>
+            {{ blog.date_created| timesince }} ago<br>
+            {{ blog.author }}<br>
+            {{ blog.body }}<br>
+
+            {% if user == blog.author and user.is_staff %}
+                <a href="{% url 'blog_update' blog.id %}">update Blog</a><br><br>
+                <form action="{% url 'blog_delete' blog.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Delete">
+                </form>
+
+            {% endif %}
+        <br><br>
+    {% endfor %}
+{% endif %}
+<br>
+<br>
+    {% if user.is_staff %}
+        <a href="{% url 'blog_create' %}">Create</a>
+    {% endif %}
+</body>
+</html>
